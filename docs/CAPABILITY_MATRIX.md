@@ -22,3 +22,15 @@ GitHub `main` 起点 `cac008eb7ac2ebb159e8f23d2d50bd773e282c2e`。本轮新增�
 ## 故障处理与权限
 
 默认禁止上传任何真实日志、token、任务合同、命令或私人路径。`events.jsonl`、`state/`、`data/`、`*.sqlite3` 不应纳入提交。`Stop` 只是回合结束，不是任务完成；`PASSED` 只代表某个被批准命令在特定快照上退出码为 0。旧监督 `supervision.py` 的“六次同类工具”启发式不是循环事实；新 `runtime_v2.py` 优先查明确的失败结果和配对缺口。
+
+## 第 29–32 篇 Codex App 专用增量（2026-10-08）
+
+| 能力 | 当前结果 | 不能声称 |
+|---|---|---|
+| 项目级 Codex App Hook | 人工审查后可显式安装新 `hooks.json`；默认本机脱敏采集 | 尚无用户 App 真实 Hook 记录，`G1=NOT_VERIFIED` |
+| 用户本机前台观察 | JSONL 游标和 SQLite 状态持久化、漏写半行等待 | 不证明所有 App 工具路径均可见，不是系统后台服务 |
+| 失败/疑似缺终态提醒 | `FAILURE_CLUSTER_REVIEW`、`SUSPECTED_STALL` 保守复核，可选 PowerShell 气泡 | 不确认死循环、模型预测准确率、Windows 通知必达 |
+| 备份/恢复 | SQLite 原生在线备份、健康扫描、重启防重复提示 | 无自动还原、更不会让 Codex App 自动重试 |
+| 个人试用 | [Windows Codex App Runbook](CODEX_APP_QUICKSTART_29-32.md) | `G3=NOT_EVALUATED`、`G4=NOT_VERIFIED`、不可当正式 V1.0 |
+
+Hook 接收器与 Watcher 没有捕获 prompt、命令或输出，默认删除路径字段。但会话标识仍属于用户本地私有资料。观测器自报来源 `hook_input_unverified`，任何假 Hook 输入都不能作为 Codex App 身份认证。

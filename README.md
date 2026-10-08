@@ -36,6 +36,10 @@
 | 26 | [StepWise 不是魔法按钮：小模型增益的公平比较](从零开发%20Agent%20Watchdog（26）.md) |
 | 27 | [AI 忙错方向怎么办：合同锚定与目标偏离复核](从零开发%20Agent%20Watchdog（27）.md) |
 | 28 | [报告、产物的非测试类独立验收](从零开发%20Agent%20Watchdog（28）.md) |
+| 29 | [真正面向 Windows Codex App 的项目级 Hook 安装](从零开发%20Agent%20Watchdog（29）.md) |
+| 30 | [前台提醒、持久游标与 Windows 通知](从零开发%20Agent%20Watchdog（30）.md) |
+| 31 | [Watcher 恢复、数据库健康与私有备份](从零开发%20Agent%20Watchdog（31）.md) |
+| 32 | [Codex App 伴随监督器试用与完整验收](从零开发%20Agent%20Watchdog（32）.md) |
 
 ## 配套源码
 
@@ -98,3 +102,21 @@ GitHub Actions 同时配置 Ubuntu 和 Windows 托管 Runner；它们不等于�
 python -m unittest discover -s examples\v04\tests -v
 python scripts\validate_round1_docs.py
 ```
+
+## AW-V2 第 29–32 篇：Windows Codex App 伴随观察原型
+
+**目标客户端是 Windows 桌面 Codex App，不是 `codex exec` 的日志回放。** 在用户审查并信任项目级 Hooks 后，可以运行独立的本地监控器，记录脱敏元数据、持续检查、持久化复核提醒，并尝试 Windows 本机气泡通知。无法自动确认真实 App 的覆盖率、死锁、语义偏离或最终任务完成。
+
+- **[Codex App 真实试用快速开始](docs/CODEX_APP_QUICKSTART_29-32.md)**：一步步配置新练习仓库、审核安装、在 App UI 触发真实任务、检验私有日志及撤销。
+- [四章源码索引](examples/v04/CHAPTERS_29-32.md) · [本轮测试及边界](docs/ROUND3_TEST_REPORT.md)。
+- 核心新文件：`app_hook_v29.py`、`app_setup_v29.py`、`app_watch_v30.py`、`app_recovery_v31.py`、`app_control_v32.py`、`START_CODEX_APP_WATCHDOG.cmd`，位于 `examples/v04/watchdog/`。
+- 私有日志和 SQLite 默认位于 `%LOCALAPPDATA%\AgentWatchdog`。**不扫描 Codex App 私有数据库，不采集原始 prompt/命令/输出，不执行 kill、retry、rollback，不自动安装 Windows 服务**。
+
+在干净的 Git 测试项目中先审查并应用 Hook；开一个独立的 Anaconda Prompt：
+
+```bat
+cd /d D:\program\agent_watchdog\Agent-Watchdog-app-eval\examples\v04\watchdog
+python app_control_v32.py watch --notify
+```
+
+**产品状态：个人自愿试用候选，不是正式 V1.0**。用户 Windows Codex App 的现场 G1=`NOT_VERIFIED`，真实误报/漏报 G3=`NOT_EVALUATED`，长时间使用 G4=`NOT_VERIFIED`。GitHub Actions Hosted Windows 不替代真实 App 现场证据。
