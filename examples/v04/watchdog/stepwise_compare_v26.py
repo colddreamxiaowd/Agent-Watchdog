@@ -62,8 +62,8 @@ def metrics(rows, field, threshold=None):
     precision=tp/(tp+fp) if tp+fp else None
     recall=tp/(tp+fn) if tp+fn else None
     return {"tp":tp,"fp":fp,"tn":tn,"fn":fn,"precision":precision,"recall":recall,
-            "f1":2*precision*recall/(precision+recall) if precision is not None
-                 and recall is not None and precision+recall>0 else None}
+            "f1":(2*precision*recall/(precision+recall) if precision+recall>0 else 0.0)
+            if precision is not None and recall is not None else None}
 
 
 def compare(protocol, samples):
