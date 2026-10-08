@@ -118,6 +118,20 @@ class RuntimeRules(unittest.TestCase):
         row = self.row(self.now + timedelta(seconds=1), "STARTED", "p")
         self.assertEqual(runtime.diagnose([row], now=self.now)["invalid_or_future_time"], 1)
 
+    def test_slow_completed_is_not_automatically_failure(self):
+        start = self.row(self.now - timedelta(seconds=410), "STARTED", "slow")
+        finish = self.row(self.now, "FINISHED", "slow", "SUCCEEDED")
+        result = runtime.diagnose([start, finish], now=self.now)
+        self.assertIn("SLOW_COMPLETED_CALL_REVIEW", str(result))
+        self.assertEqual(result["state"], "OBSERVING")
+
+    def test_historical_failures_do_not_trigger_permanent_alert(self):
+        stale = self.now - timedelta(days=3)
+        rows = [self.row(stale, "FINISHED", str(i), "FAILED") for i in range(4)]
+        report = runtime.diagnose(rows, now=self.now)
+        self.assertNotIn("FAILURE_CLUSTER_REVIEW", str(report))
+        self.assertEqual(report["state"], "NO_OBSERVATION")
+
 
 class ManualStepLinks(unittest.TestCase):
     def test_manual_mapping_does_not_promote_stale_or_unlinked(self):
