@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "contract_sha256": "REPLACE_WITH_YOUR_APPROVED_CONTRACT_HASH",
+  "links": [
+    {"step_id": "A1", "event_id": "REPLACE_WITH_PRIVATE_NORMALIZED_EVENT_ID", "acceptance_id": "A1"}
+  ]
+}
