@@ -118,3 +118,16 @@ python -m unittest discover -s examples\v04\tests -v
 - [Windows 现场工作单](../../docs/ROUND2_WINDOWS_RUNBOOK.md)
 
 仅隔离自动测试通过；**StepWise 未在本轮运行、真实 Codex 长任务未获现场验收**。用户模型权重、真实样本和业务数据不得纳入公开仓库。
+
+## 第 29–32 篇：Codex App 伴随监督器
+
+| 功能 | 新模块 |
+|---|---|
+| Project Hook 审查安装和脱敏记录 | [app_setup_v29.py](watchdog/app_setup_v29.py) / [app_hook_v29.py](watchdog/app_hook_v29.py) |
+| Windows 提醒、持久游标、重复提醒抑制 | [app_watch_v30.py](watchdog/app_watch_v30.py) |
+| 只读健康诊断和显式私有备份 | [app_recovery_v31.py](watchdog/app_recovery_v31.py) |
+| 统一命令入口 / Windows 手动启动 | [app_control_v32.py](watchdog/app_control_v32.py) / [START_CODEX_APP_WATCHDOG.cmd](watchdog/START_CODEX_APP_WATCHDOG.cmd) |
+
+[完整实战手册](../../docs/CODEX_APP_QUICKSTART_29-32.md) · [四章源码索引](CHAPTERS_29-32.md) · [新增模拟测试](tests/test_round3.py)。
+
+**不是** Codex App 内部插件，也不是云端控制器。手动安装需要显式审核，真实 App Hook 触发 G1 待本人确认。所有个人日志、数据库、恢复备份仅本地保存，不随 GitHub 提交。
