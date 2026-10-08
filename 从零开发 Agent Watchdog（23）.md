@@ -90,8 +90,7 @@ Bash  git status
 实验 A：没有任何事件。
 
 ```python
-runtime.diagnose([], now=now)["state"]
-# 预期：NO_OBSERVATION
+assert runtime.diagnose([], now=now)["state"] == "NO_OBSERVATION"
 ```
 
 如果得到 `SUSPECTED_STALL`，说明只靠沉默就判卡住，本章不能通过。
