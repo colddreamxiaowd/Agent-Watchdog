@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "groups": [
+    {
+      "id": "HUMAN_REVIEWED_SAME_INTENT_A",
+      "calls": [
+        {"source": "fixture_only", "session_id": "example-s", "turn_id": "example-t", "tool_use_id": "call-1"},
+        {"source": "fixture_only", "session_id": "example-s", "turn_id": "example-t", "tool_use_id": "call-2"}
+      ]
+    }
+  ]
+}

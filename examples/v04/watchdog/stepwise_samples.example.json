@@ -1,0 +1,5 @@
+[
+  {"sample_id": "demo-train-1", "session_id": "fake-A", "split": "train", "label": 0, "rule_alarm": false, "model_score": null},
+  {"sample_id": "demo-test-1", "session_id": "fake-B", "split": "test", "label": 1, "rule_alarm": true, "model_score": null},
+  {"sample_id": "demo-test-2", "session_id": "fake-C", "split": "test", "label": 0, "rule_alarm": false, "model_score": null}
+]

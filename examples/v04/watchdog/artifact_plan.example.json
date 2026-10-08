@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "contract_sha256": "REPLACE_WITH_HUMAN_APPROVED_TASK_CONTRACT_HASH",
+  "checks": [
+    {"id": "report_bytes", "path": "report.txt", "sha256": "REPLACE_WITH_APPROVED_EXPECTED_SHA256_LOWERCASE_HEX"}
+  ]
+}
