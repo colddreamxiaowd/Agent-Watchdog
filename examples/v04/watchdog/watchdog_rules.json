@@ -1,0 +1,7 @@
+{
+  "protected_paths": [
+    "GOAL.md",
+    ".env",
+    ".github/workflows/*"
+  ]
+}

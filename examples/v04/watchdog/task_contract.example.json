@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "goal": "修复 hello.py，禁止修改 GOAL.md，并通过功能与回归测试",
+  "protected_paths": ["GOAL.md", ".github/workflows/*"],
+  "acceptance": [
+    {"id": "A1", "description": "功能测试", "command": ["python", "-m", "unittest", "test_hello.py", "-v"]},
+    {"id": "A2", "description": "完整回归测试", "command": ["python", "-m", "unittest", "discover", "-p", "test_*.py", "-v"]}
+  ]
+}
