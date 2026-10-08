@@ -8,7 +8,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DEFAULT_LOG = HERE / "logs" / "events.jsonl"
 DEFAULT_DB = HERE / "data" / "journal.sqlite3"
-FIELDS = ("source", "received_at", "event", "session_id", "turn_id", "tool", "cwd", "tool_use_id")
+FIELDS = ("source", "received_at", "event", "session_id", "turn_id", "tool", "cwd", "tool_use_id",
+          "phase", "outcome", "exit_code", "result_basis", "event_id", "linkable")
 
 
 def connect(db):
@@ -72,11 +73,16 @@ def sync(log=DEFAULT_LOG, db=DEFAULT_DB, max_bytes=2*1024*1024):
 
 
 def summary(db=DEFAULT_DB):
-    with connect(db) as con:
+    # sqlite3.Connection context managers commit/rollback but do NOT close.
+    # Windows keeps a file handle open until close(), blocking tempfile cleanup.
+    con = connect(db)
+    try:
         n = con.execute("SELECT COUNT(*) FROM events").fetchone()[0]
         sessions = con.execute("SELECT COUNT(DISTINCT json_extract(payload,'$.session_id')) FROM events").fetchone()[0]
         integrity = con.execute("PRAGMA integrity_check").fetchone()[0]
         return {"events": n, "distinct_sessions": sessions, "integrity": integrity}
+    finally:
+        con.close()
 
 
 def backup(db=DEFAULT_DB, dest="journal.backup.sqlite3"):
