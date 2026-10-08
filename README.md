@@ -120,3 +120,7 @@ python app_control_v32.py watch --notify
 ```
 
 **产品状态：个人自愿试用候选，不是正式 V1.0**。用户 Windows Codex App 的现场 G1=`NOT_VERIFIED`，真实误报/漏报 G3=`NOT_EVALUATED`，长时间使用 G4=`NOT_VERIFIED`。GitHub Actions Hosted Windows 不替代真实 App 现场证据。
+
+## 2026-10-08 Codex Desktop 真实接入后的信任修订（v33）
+
+用户现场报告已在 Windows Codex Desktop 捕获五类真实生命周期事件（这是用户提供的操作摘要，尚未由本会话独立读取本机原始日志）。同时确认旧版本**项目级 Hook + 直接引号执行 Python**的通用推荐不适合该 Windows 配置；不要覆盖已工作中的**全局 Hook + commandWindows + ASCII .cmd 包装器**。正式信任应在相同 CODEX_HOME 的**交互式 CLI** 输入 `/hooks` 审核当前定义，而不是在网页版 ChatGPT 中执行。[Codex App Hook 信任与真实现场修订](docs/CODEX_APP_HOOK_TRUST_FIELD_FIX_20261008.md) · [v33 只读 Hook 来源体检](examples/v04/watchdog/app_trust_review_v33.py)。G1 操作者报告 E2E 已见、Trust 待正常无 bypass 核验；G3/G4 仍未通过。
