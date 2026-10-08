@@ -163,6 +163,7 @@ def poll(log=None, db=None, sec=None, include_existing=False, stall_seconds=300,
     con=connect(pathdb)
     try:
         with con:
+            latest_alert_id = con.execute("SELECT COALESCE(MAX(rowid),0) FROM alerts").fetchone()[0]
             previous = get_meta(con,"cursor")
             if not path.is_file():
                 # Remember we were already watching before the first real event:
@@ -212,8 +213,10 @@ def poll(log=None, db=None, sec=None, include_existing=False, stall_seconds=300,
             set_meta(con,"prefix_len",prefix_len)
             set_meta(con,"prefix",file_prefix(path,prefix_len))
             set_meta(con,"awaiting_first_file","0")
+            newly_created=[row[0] for row in con.execute(
+                "SELECT id FROM alerts WHERE rowid>? ORDER BY rowid",(latest_alert_id,)).fetchall()]
             return {"status":"OBSERVING_NOT_A_HEALTH_PROOF",
-                    "events_new":count, "alerts_new":alerts,
+                    "events_new":count, "alerts_new":alerts, "new_alert_ids":newly_created,
                     "cursor_reset":reset,"log_warning":warning}
     finally:
         con.close()
@@ -245,13 +248,15 @@ def notify_windows(code):
         return False
 
 
-def show_alerts(db=None, notify=False):
+def show_alerts(db=None, notify=False, new_ids=()):
     con=connect(db or db_path())
     try:
         alerts=con.execute("SELECT code,created,message FROM alerts ORDER BY created DESC LIMIT 20").fetchall()
-        if notify:
-            # Only notify for newly created, never re-notify on restart.
-            ids=con.execute("SELECT id,code FROM alerts WHERE id NOT IN (SELECT value FROM meta WHERE name LIKE 'attempted:%') LIMIT 10").fetchall()
+        if notify and new_ids:
+            # Only notify for alarms created by THIS poll, not historical alarms.
+            # A crash before delivery can miss a toast; the durable DB still retains the alert.
+            ids=con.execute("SELECT id,code FROM alerts WHERE id IN ("+
+                ",".join("?" for _ in new_ids[:10])+")",tuple(new_ids[:10])).fetchall()
             for ident,code in ids:
                 result=notify_windows(code)
                 with con:
@@ -275,13 +280,19 @@ def main():
     a=p.parse_args()
     if a.interval<1:
         p.error("interval must be positive")
+    first=True
     while True:
         try:
             report=poll(a.log,a.db,include_existing=a.include_existing,
                         stall_seconds=a.stall_seconds,failure_count=a.failure_count)
-            report["recent_alerts"]=[{"code":x[0],"created":x[1],"detail":x[2]}
-                                     for x in show_alerts(a.db,a.notify)]
-            print(json.dumps(report,ensure_ascii=False,default=str),flush=True)
+            fresh=report.pop("new_alert_ids",[])
+            if a.once or first or report.get("events_new") or report.get("alerts_new"):
+                report["recent_alerts"]=[{"code":x[0],"created":x[1],"detail":x[2]}
+                                         for x in show_alerts(a.db,a.notify,fresh)]
+                print(json.dumps(report,ensure_ascii=False,default=str),flush=True)
+            elif fresh:
+                show_alerts(a.db,a.notify,fresh)
+            first=False
         except (OSError,sqlite3.Error,ValueError) as e:
             print(json.dumps({"status":"WATCHER_ERROR","error_type":type(e).__name__}),flush=True)
         if a.once:
