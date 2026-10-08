@@ -83,6 +83,12 @@ class EvalTest(unittest.TestCase):
         self.rows[1]["session_id"]="S1"
         with self.assertRaisesRegex(ValueError,"leakage"):
             compare.compare(self.protocol,self.rows)
+    def test_defined_zero_precision_and_recall_f1_is_zero(self):
+        self.rows[1]["rule_alarm"] = False
+        self.rows[2]["rule_alarm"] = True
+        report = compare.compare(self.protocol, self.rows)
+        self.assertEqual(report["rule"]["f1"], 0.0)
+
     def test_no_posthoc_thresholds(self):
         del self.protocol["threshold"]
         with self.assertRaises(ValueError):
