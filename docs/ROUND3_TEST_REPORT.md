@@ -21,6 +21,6 @@
 
 ## 测试工作流
 
-CI: `.github/workflows/round1-ci.yml` 已扩展至 round3 分支，Windows + Ubuntu Python 3.11 运行所有原 67 项及 `test_round3.py` 中新增的隔离单测；Markdown 静态检查只验证标题、围栏和已存在的相对链接，不证明业务正确。跨平台结果、修正的失败和最终 Actions 链接将在最后审核/合并时按具体提交记录，**不得先填“全部通过”**。
+CI: `.github/workflows/round1-ci.yml` 已扩展至 round3 分支，Windows + Ubuntu Python 3.11 运行所有原 67 项及 `test_round3.py` 中新增的隔离单测；Markdown 静态检查只验证标题、围栏和已存在的相对链接，不证明业务正确。**已核验结果**：[Actions Run 37792802473](https://github.com/colddreamxiaowd/Agent-Watchdog/actions/runs/37792802473)，对应分支提交 `553ea69b738dd324139c37a6d9e5f9a3390ac33f`：Windows Hosted Runner 85 项 unittest 通过，Ubuntu Hosted Runner 85 项 unittest 通过；26 份 Markdown 静态检查，两平台均 errors=0。初次扩展文档时 [Run 37792675993](https://github.com/colddreamxiaowd/Agent-Watchdog/actions/runs/37792675993) 因第 30 篇代码注释被误认为第二个 H1 而失败，现已修复。这些是有界自动回归而**不是 Codex App 真实试用证据**。
 
 Windows 现场：按 [Codex App Quickstart](CODEX_APP_QUICKSTART_29-32.md) 手工审查日志、App UI 实际工具调用和 Hook 执行。不得用 CLI、合成事件、另一个安装的 Codex 或 GitHub Runner 替代 App 验收。
