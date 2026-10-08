@@ -23,8 +23,8 @@ for page in PAGES:
             errors.append(f"tutorial too short: {page}")
         if len(re.findall(r"^# ", data, re.M)) != 1:
             errors.append(f"invalid H1 count: {page}")
-        if data.count("```") != 0:  # placeholder sentinel may never ship
-            errors.append(f"unconverted code fence: {page}")
+        if "\u00a7" * 3 in data:
+            errors.append(f"unconverted placeholder: {page}")
         if len(re.findall(r"^```", data, re.M)) % 2:
             errors.append(f"unbalanced markdown fences: {page}")
     for url in re.findall(r"\[[^\]]+\]\(([^)]+)\)", data):
