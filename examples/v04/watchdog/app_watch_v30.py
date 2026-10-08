@@ -57,9 +57,9 @@ def set_meta(con, name, value):
                 (name, str(value)))
 
 
-def file_prefix(path):
+def file_prefix(path, length):
     with Path(path).open("rb") as f:
-        return hashlib.sha256(f.read(256)).hexdigest()
+        return hashlib.sha256(f.read(length)).hexdigest()
 
 
 def new_lines(path, offset):
@@ -165,19 +165,24 @@ def poll(log=None, db=None, sec=None, include_existing=False, stall_seconds=300,
         with con:
             previous = get_meta(con,"cursor")
             if not path.is_file():
+                # Remember we were already watching before the first real event:
+                # otherwise the first file creation would be incorrectly skipped.
+                if previous is None:
+                    set_meta(con,"awaiting_first_file","1")
                 return {"status":"NO_LOG_NOT_CODEX_OFFLINE","events_new":0,"alerts_new":0}
             stat=path.stat()
             generation=str((stat.st_dev,stat.st_ino))
-            prefix=file_prefix(path)
             size=stat.st_size
             prev_gen=get_meta(con,"generation")
             prev_prefix=get_meta(con,"prefix")
+            prev_prefix_len=int(get_meta(con,"prefix_len") or "0")
+            prefix=file_prefix(path,prev_prefix_len)
             offset=int(previous) if previous is not None else 0
             reset=(previous is not None and
                     (generation!=prev_gen or prefix!=prev_prefix or size<offset))
             if reset:
                 offset=0
-            if previous is None and not include_existing:
+            if previous is None and not include_existing and get_meta(con,"awaiting_first_file")!="1":
                 # Start from the last complete line. Never consume a half line.
                 with path.open("rb") as f:
                     f.seek(max(0,size-MAX_LINE))
@@ -203,7 +208,10 @@ def poll(log=None, db=None, sec=None, include_existing=False, stall_seconds=300,
             alerts+=check_stalls(con,sec,stall_seconds)
             set_meta(con,"cursor",new_offset)
             set_meta(con,"generation",generation)
-            set_meta(con,"prefix",prefix)
+            prefix_len=min(256,new_offset)
+            set_meta(con,"prefix_len",prefix_len)
+            set_meta(con,"prefix",file_prefix(path,prefix_len))
+            set_meta(con,"awaiting_first_file","0")
             return {"status":"OBSERVING_NOT_A_HEALTH_PROOF",
                     "events_new":count, "alerts_new":alerts,
                     "cursor_reset":reset,"log_warning":warning}
