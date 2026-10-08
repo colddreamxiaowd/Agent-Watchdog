@@ -2,6 +2,7 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -116,6 +117,42 @@ class RuntimeRules(unittest.TestCase):
     def test_future_timestamp_invalid(self):
         row = self.row(self.now + timedelta(seconds=1), "STARTED", "p")
         self.assertEqual(runtime.diagnose([row], now=self.now)["invalid_or_future_time"], 1)
+
+
+class ManualStepLinks(unittest.TestCase):
+    def test_manual_mapping_does_not_promote_stale_or_unlinked(self):
+        contract = {"schema_version": 1, "goal": "check", "acceptance": [
+            {"id":"A1","description":"test","command":["python","-V"]}]}
+        anchor = {"event_id": "event-1", "linkable": True, "source": "fixture_only",
+                  "session_id": "s", "turn_id": "t", "tool": "Bash"}
+        mapping = {"schema_version":1, "contract_sha256":step_links_v2.task_contract.contract_hash(contract),
+                   "links":[{"step_id":"A1", "event_id":"event-1", "acceptance_id":"A1"},
+                            {"step_id":"A1", "event_id":"not-present"}]}
+        with patch.object(step_links_v2.evidence, "root_for", return_value=Path(".")), \
+             patch.object(step_links_v2.task_contract, "load", return_value=(contract, True, {}, None)), \
+             patch.object(step_links_v2.task_contract, "acceptance_status",
+                          return_value={"stage":"IN_PROGRESS","acceptance":{"A1":"STALE"}}):
+            result = step_links_v2.build(".", [anchor], mapping)
+        self.assertEqual(result["links"][0]["acceptance_status"], "STALE")
+        self.assertEqual(result["links"][0]["association"], "LINKED_MANUALLY")
+        self.assertEqual(result["links"][1]["association"], "UNLINKED")
+        self.assertEqual(result["unlinked"], 1)
+
+    def test_wrong_contract_hash_and_unapproved_rejected(self):
+        contract = {"schema_version":1, "goal":"x", "acceptance":[]}
+        links = {"schema_version":1, "contract_sha256":"wrong", "links":[]}
+        with patch.object(step_links_v2.evidence, "root_for", return_value=Path(".")), \
+             patch.object(step_links_v2.task_contract, "load", return_value=(contract, True, {}, None)), \
+             patch.object(step_links_v2.task_contract, "acceptance_status",
+                          return_value={"stage":"IN_PROGRESS","acceptance":{}}):
+            with self.assertRaises(ValueError):
+                step_links_v2.build(".", [], links)
+        with patch.object(step_links_v2.evidence, "root_for", return_value=Path(".")), \
+             patch.object(step_links_v2.task_contract, "load", return_value=(contract, False, {}, None)), \
+             patch.object(step_links_v2.task_contract, "acceptance_status",
+                          return_value={"stage":"BLOCKED","acceptance":{}}):
+            with self.assertRaises(ValueError):
+                step_links_v2.build(".", [], links)
 
 
 if __name__ == "__main__":
