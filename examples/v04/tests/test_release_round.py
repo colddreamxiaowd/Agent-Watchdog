@@ -33,6 +33,8 @@ class FinalRoundTest(unittest.TestCase):
         (self.repo/'app.py').write_text('VALUE = 1\n', encoding='utf-8')
         subprocess.run(['git','add','.'],cwd=self.repo,check=True,stdout=subprocess.DEVNULL)
         subprocess.run(['git','commit','-m','baseline'],cwd=self.repo,check=True,stdout=subprocess.DEVNULL)
+        # Normalize once: Windows Git may return a canonical path different from the temporary alias.
+        self.repo = evidence.root_for(self.repo)
         evidence.atomic_json(evidence.state_dir(self.repo) / 'baseline.json', {'files': evidence.snapshot(self.repo)})
         self.db = self.root / 'events.sqlite3'
 

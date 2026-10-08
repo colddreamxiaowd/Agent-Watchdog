@@ -98,3 +98,13 @@ python -m unittest discover -s examples\v04\tests -v
 - [完整自动化测试](tests/test_release_round.py)
 
 **发布状态**：第 20 篇代表主线教程完成与 Release Candidate 准备，不是用户 Windows 现场验收完成，也不是 GitHub 产品 Release 已经创建。
+
+## 第 21–24 篇：真实事件/结果/异常/任务关联增量
+
+新增：`doctor_v21.py`（就绪度仍为 NOT_VERIFIED）、`hook_runner_v21.cmd`（不替换旧 Runner）、`execution_v2.py`（三来源显式脱敏适配）、`runtime_v2.py`（有证据的保守异常）、`step_links_v2.py`（批准合同下的人工事件/验收关联）。`journal.py` 扩充白名单允许存储新字段，但旧的 JSONL 可以继续导入、缺少的信息仍未知。
+
+- [安全的 Windows 操作与反例工作单](CHAPTERS_21-24.md)
+- [本轮跨平台 pytest 之外的标准库 unittest](tests/test_round1.py)
+- [更具体的真正 Codex G1 现场验收模板](../../docs/REAL_CODEX_E2E_RUNBOOK.md)
+
+**本地用户现场状态**：NOT_VERIFIED。请不要将 `test_round1.py` 的人工 fixture 解释成真实 Codex 动作。不要把包含 session ID 和路径的日志推上公开 GitHub。

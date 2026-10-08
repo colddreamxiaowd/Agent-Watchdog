@@ -28,6 +28,10 @@
 | 18 | [Streamlit 本地 Web 监督控制台](从零开发%20Agent%20Watchdog（18）.md) |
 | 19 | [长期运行、SQLite 备份与恢复](从零开发%20Agent%20Watchdog（19）.md) |
 | 20 | [V1.0 综合验收与发布候选门槛](从零开发%20Agent%20Watchdog（20）.md) |
+| 21 | [别再用模拟事件证明 Codex 已接入：Windows G1 验收](从零开发%20Agent%20Watchdog（21）.md) |
+| 22 | [工具结束不等于成功：统一事件与结果状态](从零开发%20Agent%20Watchdog（22）.md) |
+| 23 | [五分钟没动静就是卡死？保守运行监督状态机](从零开发%20Agent%20Watchdog（23）.md) |
+| 24 | [操作与任务步骤关联，但不让“做过”冒充“做成”](从零开发%20Agent%20Watchdog（24）.md) |
 
 ## 配套源码
 
@@ -54,3 +58,23 @@
 第 17–20 篇增加事实/弱信号分层、Streamlit 本地面板、数据级健康检查与 SQLite 在线备份、Release Candidate 检查机制。完整安装与本机验收见 [第 17–20 篇运行说明](examples/v04/CHAPTERS_17-20.md)。
 
 **重要**：教程写到第 20 篇不等于软件正式 V1.0 发布。用户 Windows + 真实 Codex、跨会话、测试过期、备份恢复与安全审核仍需现场证据；未完成时发布门槛保持 `BLOCKED`。
+
+## AW-V2 · 第 21–24 篇：先工程后博客（2026-10-08）
+
+这是一轮**可审计参考工程增量**，不是产品 V1.0 已发布。第 20 篇的“收官”只表示当时的教程主线结束；真实产品目标尚未完成。本轮具体状态参阅：
+
+- [修订版产品需求、G0–G4 门槛](docs/PRODUCT_REQUIREMENTS_V2.md) · [能力/证据矩阵](docs/CAPABILITY_MATRIX.md)
+- [Windows + 真实 Codex E2E 验收 Runbook](docs/REAL_CODEX_E2E_RUNBOOK.md)（本机实测 **NOT_VERIFIED**）
+- [事件来源与字段保守语义](docs/EVENT_SOURCE_MATRIX.md) · [自动化测试记录与限制](docs/ROUND1_TEST_REPORT.md)
+- [第 21–24 篇源码、安装和反例测试指南](examples/v04/CHAPTERS_21-24.md)
+
+新模块均在原有 `examples/v04/watchdog/` 中：`doctor_v21.py`、`execution_v2.py`、`runtime_v2.py`、`step_links_v2.py` 和可选 Runner `hook_runner_v21.cmd`。旧的 `hook_runner_v04.cmd` 与 `evidence.py` 保留。显式修改了旧 `journal.py` 的字段白名单与 SQLite 句柄关闭，以及 `operations.py` 的句柄关闭，修复跨平台测试用例里的仓库路径规范化。
+
+一键验证全套（**仅隔离代码测试，不接入真实 Codex**）：
+
+```bat
+python -m unittest discover -s examples\v04\tests -v
+python scripts\validate_round1_docs.py
+```
+
+GitHub Actions 同时配置 Ubuntu 和 Windows 托管 Runner；它们不等于用户的 Windows 11 真机。重复 Bash、无新事件、旧测试 PASS 均不自动触发“循环/死锁/任务完成”结论。真实 Codex Hook G1、真案例检测 G3、长期安全 G4 仍需分别验收；第 25–28 篇不能凭教程数量直接晋级。

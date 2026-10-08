@@ -3,6 +3,7 @@
 No scheduling, logging of secrets, process killing, or autonomous recovery.
 """
 import argparse
+from contextlib import closing
 import json
 import os
 import sqlite3
@@ -30,7 +31,7 @@ def check(repo, db=journal.DEFAULT_DB, report_age_seconds=120):
             info['git_report'] = 'UNTRUSTED_TIMESTAMP'
     if Path(db).is_file():
         try:
-            with sqlite3.connect(str(db), timeout=3) as con:
+            with closing(sqlite3.connect(str(db), timeout=3)) as con:
                 integrity = con.execute('PRAGMA integrity_check').fetchone()[0]
                 events = con.execute('SELECT COUNT(*) FROM events').fetchone()[0]
             info['database'] = 'OK' if integrity == 'ok' else 'FAILED_INTEGRITY'
@@ -60,7 +61,7 @@ def archive(repo, db, dest):
     target.parent.mkdir(parents=True, exist_ok=True)
     try:
         journal.backup(source, target)
-        with sqlite3.connect(str(target)) as con:
+        with closing(sqlite3.connect(str(target))) as con:
             if con.execute('PRAGMA integrity_check').fetchone()[0] != 'ok':
                 raise RuntimeError('Backup failed integrity verification')
     except Exception:
