@@ -32,6 +32,10 @@
 | 22 | [工具结束不等于成功：统一事件与结果状态](从零开发%20Agent%20Watchdog（22）.md) |
 | 23 | [五分钟没动静就是卡死？保守运行监督状态机](从零开发%20Agent%20Watchdog（23）.md) |
 | 24 | [操作与任务步骤关联，但不让“做过”冒充“做成”](从零开发%20Agent%20Watchdog（24）.md) |
+| 25 | [连续失败也不一定在死循环：失败聚集与人工意图审查](从零开发%20Agent%20Watchdog（25）.md) |
+| 26 | [StepWise 不是魔法按钮：小模型增益的公平比较](从零开发%20Agent%20Watchdog（26）.md) |
+| 27 | [AI 忙错方向怎么办：合同锚定与目标偏离复核](从零开发%20Agent%20Watchdog（27）.md) |
+| 28 | [报告、产物的非测试类独立验收](从零开发%20Agent%20Watchdog（28）.md) |
 
 ## 配套源码
 
@@ -78,3 +82,19 @@ python scripts\validate_round1_docs.py
 ```
 
 GitHub Actions 同时配置 Ubuntu 和 Windows 托管 Runner；它们不等于用户的 Windows 11 真机。重复 Bash、无新事件、旧测试 PASS 均不自动触发“循环/死锁/任务完成”结论。真实 Codex Hook G1、真案例检测 G3、长期安全 G4 仍需分别验收；第 25–28 篇不能凭教程数量直接晋级。
+
+## AW-V2 · 第 25–28 篇：核心监督 MVP 的有界工程基础（2026-10-08）
+
+- **25**：新增 [failure_review_v25.py](examples/v04/watchdog/failure_review_v25.py)，区分明确失败聚集和被人工标注为同一尝试意图的候选；同类型 Bash 不等于同命令或无效循环。
+- **26**：新增 [stepwise_compare_v26.py](examples/v04/watchdog/stepwise_compare_v26.py)，仅对明确导入的外部模型分数与同一批独立标签的规则基线做配对计算；不下载/运行 StepWise 模型，缺少真实输出时 `NOT_EVALUATED`。
+- **27**：新增 [drift_review_v27.py](examples/v04/watchdog/drift_review_v27.py)，区分 Git 范围事实与来源未认证的语义偏离建议；只能 `HUMAN_REVIEW_REQUIRED`。
+- **28**：新增 [artifact_acceptance_v28.py](examples/v04/watchdog/artifact_acceptance_v28.py)，核验经批准的预期产物 SHA256 和 Git 范围，结果最多是 `ARTIFACT_BYTES_MATCH_ONLY`，不绕过旧的 Task Contract 独立测试。
+
+配套：[四章安装和源码对应说明](examples/v04/CHAPTERS_25-28.md) · [本轮证据协议与 G3 门槛](docs/ROUND2_EVIDENCE_PROTOCOL.md) · [Windows 人工验收工作单](docs/ROUND2_WINDOWS_RUNBOOK.md) · [本轮 CI 与差距报告](docs/ROUND2_TEST_REPORT.md)。
+
+**边界**：当前新增代码是有正反例覆盖的参考实现，而不是完整智能监督 MVP。用户 Windows 上的 G1 真实接入仍 `NOT_VERIFIED`，G3 真实检测误报/漏报与 StepWise 增益仍 `NOT_EVALUATED`，G4 长期/提醒/恢复尚未验证。不得将合成数据的计算结果作为实际性能宣称，不上传私人日志与命令输出。
+
+```bat
+python -m unittest discover -s examples\v04\tests -v
+python scripts\validate_round1_docs.py
+```

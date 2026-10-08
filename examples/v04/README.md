@@ -108,3 +108,13 @@ python -m unittest discover -s examples\v04\tests -v
 - [更具体的真正 Codex G1 现场验收模板](../../docs/REAL_CODEX_E2E_RUNBOOK.md)
 
 **本地用户现场状态**：NOT_VERIFIED。请不要将 `test_round1.py` 的人工 fixture 解释成真实 Codex 动作。不要把包含 session ID 和路径的日志推上公开 GitHub。
+
+## 第 25–28 篇：结果驱动监督与非测试产物验收
+
+同一 `examples/v04/watchdog/` 目录增加 `failure_review_v25.py`、`stepwise_compare_v26.py`、`drift_review_v27.py`、`artifact_acceptance_v28.py`；原来的 `evidence.py`、`task_contract.py`、`execution_v2.py` 继续作为接口真源，未经授权不自动改动 Agent 或你的工作区。
+
+- [本轮四篇源码 / CLI 参数 / 回退与反例](CHAPTERS_25-28.md)
+- [合成回归样本的 Python 测试](tests/test_round2.py)
+- [Windows 现场工作单](../../docs/ROUND2_WINDOWS_RUNBOOK.md)
+
+仅隔离自动测试通过；**StepWise 未在本轮运行、真实 Codex 长任务未获现场验收**。用户模型权重、真实样本和业务数据不得纳入公开仓库。
