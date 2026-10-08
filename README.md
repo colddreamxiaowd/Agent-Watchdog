@@ -24,10 +24,14 @@
 | 14 | [App Server 结构化事件与最小化采集](从零开发%20Agent%20Watchdog（14）.md) |
 | 15 | [任务要求与验收证据的进度关联](从零开发%20Agent%20Watchdog（15）.md) |
 | 16 | [任务范围偏离与人工复核](从零开发%20Agent%20Watchdog（16）.md) |
+| 17 | [事实优先的智能异常监督与误报控制](从零开发%20Agent%20Watchdog（17）.md) |
+| 18 | [Streamlit 本地 Web 监督控制台](从零开发%20Agent%20Watchdog（18）.md) |
+| 19 | [长期运行、SQLite 备份与恢复](从零开发%20Agent%20Watchdog（19）.md) |
+| 20 | [V1.0 综合验收与发布候选门槛](从零开发%20Agent%20Watchdog（20）.md) |
 
 ## 配套源码
 
-[第 04–16 篇兼容工程与测试](examples/v04/README.md)，沿用你原第三篇 `evidence.py` 的接口，Windows 11 + Conda 为主要目标。真实 Codex Hook 接入与长时间运行需要在用户本机另外验收，隔离环境中的自动测试通过不能代替现场验证。
+[第 04–20 篇兼容工程与测试](examples/v04/README.md)，沿用你原第三篇 `evidence.py` 的接口，Windows 11 + Conda 为主要目标。真实 Codex Hook 接入与长时间运行需要在用户本机另外验收，隔离环境中的自动测试通过不能代替现场验证。
 
 ## 设计边界
 
@@ -44,3 +48,9 @@
 [第 13–16 篇的安装与验收说明](examples/v04/CHAPTERS_13-16.md)。新增 `integration_check.py`、`appserver_adapter.py`、`progress.py`、`scope_guard.py`，并保留原来的 `evidence.py` 与 Task Contract 接口。`appserver_adapter.py` 只导入用户明确提供的离线事件流，不接管 App Server 运行或审批；`scope_guard.py` 是路径边界监督，不是通用语义偏离分类器。
 
 上述内容属于教程与隔离测试成果，不代表作者用户 Windows 机器已完成真实 Codex 端到端联调。
+
+## 第 17–20 篇：主线收官与发布门槛
+
+第 17–20 篇增加事实/弱信号分层、Streamlit 本地面板、数据级健康检查与 SQLite 在线备份、Release Candidate 检查机制。完整安装与本机验收见 [第 17–20 篇运行说明](examples/v04/CHAPTERS_17-20.md)。
+
+**重要**：教程写到第 20 篇不等于软件正式 V1.0 发布。用户 Windows + 真实 Codex、跨会话、测试过期、备份恢复与安全审核仍需现场证据；未完成时发布门槛保持 `BLOCKED`。

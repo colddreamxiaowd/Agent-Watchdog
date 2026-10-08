@@ -13,3 +13,6 @@ __pycache__/
 # Explicit offline App Server teaching exports (may contain private raw content)
 examples/v04/watchdog/*.ndjson
 examples/v04/watchdog/*.jsonl
+# Human release evidence and local machine metadata must not be auto-published.
+*.attestation.json
+watchdog_backup/

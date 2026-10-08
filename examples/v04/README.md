@@ -88,3 +88,13 @@ python -m unittest discover -s examples\v04\tests -v
 ```
 
 真实 Codex 端到端的人工检查表见 [CHAPTERS_13-16.md](CHAPTERS_13-16.md)。
+
+## 第 17–20 篇：异常监督、Web、备份与 V1.0 发布门槛
+
+本轮只追加四个模块，保持现有接口：`supervision.py` 负责分开输出事实与启发式提示；`dashboard.py` 提供本地 Streamlit 只读视图；`operations.py` 对 SQLite 与 Git 报告进行数据级诊断、显式备份；`release_gate.py` 拒绝将未经本机验证的参考实现伪装成正式 V1.0。
+
+- [安装与 Windows 综合验收](CHAPTERS_17-20.md)
+- [全部未通过的人工声明模板](RELEASE_ATTESTATION.example.json)
+- [完整自动化测试](tests/test_release_round.py)
+
+**发布状态**：第 20 篇代表主线教程完成与 Release Candidate 准备，不是用户 Windows 现场验收完成，也不是 GitHub 产品 Release 已经创建。

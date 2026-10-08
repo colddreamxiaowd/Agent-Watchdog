@@ -1,0 +1,11 @@
+{
+  "observations": {
+    "real_codex_hook": false,
+    "cross_repo_isolation": false,
+    "claim_not_completion": false,
+    "test_stale_on_change": false,
+    "backup_restore": false,
+    "local_dashboard": false,
+    "safety_review": false
+  }
+}
