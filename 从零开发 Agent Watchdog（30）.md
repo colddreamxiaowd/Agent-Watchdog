@@ -45,7 +45,7 @@
 因此代码使用的词是 `SUSPECTED_STALL`，而不是 `CONFIRMED_HANG`：
 
 ```python
-# 核心判定：有开始，没看到结束，并达到时间阈值
+    # 核心判定：有开始，没看到结束，并达到时间阈值
 started is not None
 and finished is None
 and seconds_since_start >= stall_seconds
