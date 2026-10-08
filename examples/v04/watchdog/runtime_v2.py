@@ -18,8 +18,8 @@ def moment(s):
         return None
 
 
-def diagnose(rows, now=None, stall_seconds=300, quiet_seconds=300, repeat_limit=3):
-    if stall_seconds < 1 or quiet_seconds < 1 or repeat_limit < 2:
+def diagnose(rows, now=None, stall_seconds=300, quiet_seconds=300, repeat_limit=3, failure_window_seconds=600):
+    if stall_seconds < 1 or quiet_seconds < 1 or repeat_limit < 2 or failure_window_seconds < 1:
         raise ValueError("thresholds must be positive")
     now = now or datetime.now(timezone.utc)
     if now.tzinfo is None:
@@ -55,9 +55,17 @@ def diagnose(rows, now=None, stall_seconds=300, quiet_seconds=300, repeat_limit=
                               "source": key[0], "session": key[1], "certainty": "REVIEW"})
             continue
         if finished:
-            terminal = finished[-1][1]
-            if terminal.get("outcome") == "FAILED":
+            ended_at, terminal = finished[-1]
+            if terminal.get("outcome") == "FAILED" and (now - ended_at).total_seconds() <= failure_window_seconds:
                 closed_failures.append((key, terminal))
+            if started:
+                started_at = started[0][0]
+                duration = (ended_at - started_at).total_seconds()
+                if duration >= stall_seconds:
+                    incidents.append({"kind": "SLOW_COMPLETED_CALL_REVIEW", "call": key[3],
+                                      "source": key[0], "session": key[1],
+                                      "duration_seconds": int(duration),
+                                      "certainty": "DURATION_ONLY_NOT_A_FAILURE"})
             if not started:
                 incidents.append({"kind": "ORPHAN_TERMINAL", "call": key[3],
                                   "source": key[0], "session": key[1], "certainty": "REVIEW"})
@@ -84,14 +92,15 @@ def diagnose(rows, now=None, stall_seconds=300, quiet_seconds=300, repeat_limit=
                               "source": source, "tool_category": tool,
                               "distinct_failed_calls": len(ids),
                               "certainty": "NOT_PROOF_OF_RETRY_OR_LOOP"})
-    if not recent or (now - recent[-1][0]).total_seconds() >= quiet_seconds:
+    quiet = not recent or (now - recent[-1][0]).total_seconds() >= quiet_seconds
+    if quiet:
         incidents.append({"kind": "NO_OBSERVATION", "certainty": "UNKNOWN_ACTIVITY",
                           "detail": "No recent evidence; machine sleep/unsupported tools possible"})
-    return {"state": ("FAILED" if closed_failures else "SUSPECTED_STALL"
-                      if any(x["kind"] == "SUSPECTED_STALL" for x in incidents)
-                      else "NO_OBSERVATION" if not recent or
-                      (now - recent[-1][0]).total_seconds() >= quiet_seconds
-                      else "OBSERVING"),
+    suspected = any(x["kind"] == "SUSPECTED_STALL" for x in incidents)
+    # Do not leave an old failure as the permanent status of a healthy new run.
+    return {"state": ("SUSPECTED_STALL" if suspected else
+                      "NO_OBSERVATION" if quiet else
+                      "FAILED" if closed_failures else "OBSERVING"),
             "events_read": len(recent), "invalid_or_future_time": invalid_time,
             "open_calls": len(active), "incidents": incidents,
             "limits": "No automatic kill/retry; missing hooks and sleep cannot confirm deadlock."}
