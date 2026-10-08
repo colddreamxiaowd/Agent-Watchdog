@@ -32,9 +32,9 @@ codex --version
 同步此仓库的 v33 诊断工具后，在本地运行：
 
 ```powershell
-cd D:\program\agent_watchdog_for_loomy\examples\v04\watchdog
+cd D:\program\Agent-Watchdog\examples\v04\watchdog
 python app_trust_review_v33.py
-python app_trust_review_v33.py --project "D:\file\agentfromme\RAWRM"
+python app_trust_review_v33.py --project "D:\Projects\codex-app-test"
 ```
 
 **这些仅是示意的用户报告路径**；不能假设脚本已存在于这两个本地位置。工具只显示配置层事件数量、`commandWindows` 有无、可疑带引号 Windows 命令/重复事件来源等；**不会输出任何命令文本、trusted_hash 或私人配置数据，也不会对 Hook 做修改或信任确认**。如果某事件计数超过 1，属于“可能并发匹配”，不是已经证实重复执行同一个处理器。
