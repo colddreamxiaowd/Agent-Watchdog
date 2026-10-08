@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "contract_sha256": "REPLACE_WITH_HUMAN_APPROVED_TASK_CONTRACT_HASH",
+  "items": [
+    {"code": "POSSIBLE_GOAL_DEVIATION", "acceptance_id": "A1", "event_ids": ["REPLACE_WITH_REAL_REVIEWED_EVENT_ID"]}
+  ]
+}
