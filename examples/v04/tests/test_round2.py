@@ -107,7 +107,7 @@ class LocalRepoTest(unittest.TestCase):
                     ["git","config","user.name","Fixture"]):
             subprocess.run(cmd,cwd=self.repo,check=True,capture_output=True)
         (self.repo/"GOAL.md").write_text("DO NOT TOUCH\n",encoding="utf-8")
-        (self.repo/"report.txt").write_text("expected bytes\n",encoding="utf-8")
+        (self.repo/"report.txt").write_bytes(b"expected bytes\n")
         (self.repo/".gitignore").write_text("secret/\n",encoding="utf-8")
         subprocess.run(["git","add","."],cwd=self.repo,check=True,capture_output=True)
         subprocess.run(["git","commit","-m","baseline"],cwd=self.repo,check=True,capture_output=True)
