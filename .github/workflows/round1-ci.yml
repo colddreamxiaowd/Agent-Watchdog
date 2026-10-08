@@ -23,5 +23,7 @@ jobs:
           git --version
       - name: Full legacy + round1 unittest suite
         run: python -m unittest discover -s examples/v04/tests -v
+      - name: Check tutorial markdown and relative links
+        run: python scripts/validate_round1_docs.py
       - name: Compile new modules
         run: python -m compileall -q examples/v04/watchdog
