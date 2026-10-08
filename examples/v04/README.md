@@ -52,3 +52,39 @@ python -m unittest discover -s examples\v04\tests -v
 日志、SQLite、合同状态均写在本机。GitHub 不应包含这些本地状态；仓库 `.gitignore` 已排除相应目录。
 
 这套参考代码没有做 OS 级进程隔离，也不等于能够抵抗拥有同一文件权限的恶意 Agent。Git 指纹涵盖跟踪与未忽略文件；被忽略文件、外部服务和数据库不在当前证据范围内。
+
+
+## 第 13–16 篇：真实验收、事件适配、进度与范围检查
+
+在第 04–12 篇的相同 `watchdog` 目录新增如下只读模块（不会删除、重构原来的 evidence/contract/journal）：
+
+| 章 | 脚本 | 功能与明确边界 |
+|---|---|---|
+| 13 | `integration_check.py` | 联调就绪状态；无法自行证明真实 Codex 事件来源 |
+| 14 | `appserver_adapter.py` | 仅导入手工提供的 App Server NDJSON；不接管连接或审批 |
+| 15 | `progress.py` | 将经批准的合同验收对应里程碑；不计算语义完成率 |
+| 16 | `scope_guard.py` | 检测 Git 可见路径越界；不推断修改作者或语义动机 |
+
+Windows cmd 基本命令示例（使用你已经配置好的 `torch_env` 环境）：
+
+```bat
+cd /d D:\program\agent_watchdog\watchdog
+python integration_check.py --repo "D:\program\agent_watchdog\hook_demo"
+python progress.py --repo "D:\program\agent_watchdog\hook_demo"
+python scope_guard.py --repo "D:\program\agent_watchdog\hook_demo"
+```
+
+App Server 的脱敏导入命令（仅对你自己明确授权导出的 JSONL 文件执行）：
+
+```bat
+python appserver_adapter.py appserver_demo.ndjson --out logs\appserver_safe.jsonl
+python journal.py sync --log logs\appserver_safe.jsonl
+```
+
+运行全套隔离测试：
+
+```bat
+python -m unittest discover -s examples\v04\tests -v
+```
+
+真实 Codex 端到端的人工检查表见 [CHAPTERS_13-16.md](CHAPTERS_13-16.md)。

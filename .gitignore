@@ -9,3 +9,7 @@ examples/v04/tests/__pycache__/
 *.sqlite3-wal
 __pycache__/
 .pytest_cache/
+
+# Explicit offline App Server teaching exports (may contain private raw content)
+examples/v04/watchdog/*.ndjson
+examples/v04/watchdog/*.jsonl
