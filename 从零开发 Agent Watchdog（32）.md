@@ -1,4 +1,6 @@
 # 从零开发 Agent Watchdog（32）：第一版 Codex App 伴随监督器——今天能用到什么程度，如何真正上手？
+> **2026-10-08 现场修订**：Windows Codex App 操作者已报告**全局 Hook + commandWindows + ASCII .cmd** 路径跑通真实事件。本文早期“项目级 Hook + 引号包裹 Python”是参考实验路径，不能视作当前 Windows App 的唯一可靠配置。请优先查阅 [v33 信任审核/修订说明](docs/CODEX_APP_HOOK_TRUST_FIELD_FIX_20261008.md)，保留现有正常工作的全局 Hooks；正式审批需在同一 CODEX_HOME 的交互式 CLI 输入 `/hooks`，不能由网页版 ChatGPT 完成。
+
 
 > 第 32 篇 · Windows Codex App 实战总装 · 一键入口 · GitHub 交付 · 人工验收 · 发布边界  
 > 这不是自动接管 Codex 的插件，也没有替用户完成 Windows App 现场测试；它是**用户可明确安装、运行、停止并撤回的外部伴随观察工具**。

@@ -1,5 +1,7 @@
-"""Review-first generator for Codex desktop project hooks.
-No automatic modification to an existing hooks.json.
+"""LEGACY PROJECT-ONLY example generator. No overwrite of hooks.json.
+Windows Desktop field results favor a reviewed GLOBAL commandWindows + ASCII
+.cmd wrapper. This old project proposal may not dispatch on Desktop; use
+app_trust_review_v33.py and the interactive codex CLI /hooks for trust.
 """
 import argparse
 import json
@@ -32,7 +34,7 @@ def doctor(repo):
     return {"project": str(root), "config_path": str(dst),
             "config_exists": dst.exists(), "observer": str(Path(__file__).with_name("app_hook_v29.py")),
             "event_path": str(event_path()), "codex_app_end_to_end": "NOT_VERIFIED",
-            "next": "Review generated config; install only in disposable project and accept hooks in Codex App."}
+            "next": "Legacy project-hook demo only. On Windows prefer existing working global Hook; inspect trust via interactive CLI /hooks with same CODEX_HOME. Never overwrite global configuration."}
 
 
 def install(repo, config_obj, acknowledged=False):

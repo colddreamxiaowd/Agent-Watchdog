@@ -1,4 +1,6 @@
 # 从零开发 Agent Watchdog（29）：这一次真的对接 Windows Codex App，而不是把 CLI 日志当成 App 事件
+> **2026-10-08 现场修订**：Windows Codex App 操作者已报告**全局 Hook + commandWindows + ASCII .cmd** 路径跑通真实事件。本文早期“项目级 Hook + 引号包裹 Python”是参考实验路径，不能视作当前 Windows App 的唯一可靠配置。请优先查阅 [v33 信任审核/修订说明](docs/CODEX_APP_HOOK_TRUST_FIELD_FIX_20261008.md)，保留现有正常工作的全局 Hooks；正式审批需在同一 CODEX_HOME 的交互式 CLI 输入 `/hooks`，不能由网页版 ChatGPT 完成。
+
 
 > 第 29 篇 · Windows Codex App · 项目级 Hooks · 权限审核 · Python 脱敏观察器  
 > 本篇完成**可供本人实际安装的接入方案**，但不能代替本人在 Codex App UI 中完成真实联调。

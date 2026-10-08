@@ -1,7 +1,7 @@
-name: Agent Watchdog full regression 01–28
+name: Agent Watchdog full regression 01–33
 on:
   push:
-    branches: [feature/aw-v2-round1-21-24, feature/aw-v2-round2-25-28, feature/aw-v2-round3-29-32-app, main]
+    branches: [feature/aw-v2-round1-21-24, feature/aw-v2-round2-25-28, feature/aw-v2-round3-29-32-app, feature/codex-app-hook-trust-v33, main]
   pull_request:
   workflow_dispatch:
 jobs:

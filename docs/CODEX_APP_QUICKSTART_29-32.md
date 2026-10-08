@@ -1,5 +1,7 @@
 # Windows Codex App + Agent Watchdog 29–32｜真实试用指南（不是已完成的真机验收）
 
+> **现场修订（2026-10-08）**：用户报告当前 Windows Codex Desktop 在**全局 hooks.json + commandWindows + ASCII .cmd 包装器**下已出现真实事件，原文仅项目级的安装步骤不能用来覆盖现有成功配置。请**先读 [Hook 信任修订说明](CODEX_APP_HOOK_TRUST_FIELD_FIX_20261008.md)**，不要再次运行本文件第 2 节的项目级 install。用户的真实信任审核发生在正常交互式 Codex CLI 内的 `/hooks`，并非网页版 ChatGPT，不能用 `--dangerously-bypass-hook-trust` 代替。
+
 **本轮目标客户端：Windows 桌面 Codex App**，不是 `codex exec`、网页 ChatGPT 或独立运行的 CLI。
 
 官方说明：[Codex App on Windows](https://openai.com/index/introducing-the-codex-app/)；[Codex Hooks](https://developers.openai.com/docs/hooks)。App 可运行多线程任务，Hooks 允许在启动、工具前后和回合结束等节点执行命令。**具体 Windows App 版本、信任和沙盒能否写入本机日志，必须在用户电脑上实际核查**，不能将 GitHub Windows Runner 结果当作实机 E2E。不要关闭 App 的隔离机制来让工具跑通。
