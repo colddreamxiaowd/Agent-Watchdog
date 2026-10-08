@@ -21,7 +21,7 @@ def config(python_path=None, script_path=None):
         raise ValueError("quoted path unsupported")
     command = f'"{py}" "{script}"'
     return {"hooks": {key: [{"hooks": [{
-        "type": "command", "command": command, "timeout": 10,
+        "type": "command", "command": command, "timeout": 3 if key == "SessionEnd" else 10,
         "statusMessage": "Agent Watchdog: read-only event capture"
     }]}] for key in EVENTS}}
 
