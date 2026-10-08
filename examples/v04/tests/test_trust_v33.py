@@ -39,7 +39,7 @@ class TrustPreflightTests(unittest.TestCase):
         out=trust.audit(self.home)
         self.assertEqual(out["hook_trust"],"NOT_VERIFIED_USE_INTERACTIVE_CODEX_CLI_SLASH_HOOKS")
         self.assertIn("NO_GLOBAL_HOOKS_DETECTED_AT_SELECTED_CODEX_HOME",out["warnings"])
-        self.assertNotIn("CODEX_HOME",json.dumps(out["warnings"]))
+        self.assertNotIn(str(self.home),json.dumps(out))
     def test_global_only_five_events(self):
         win="cmd.exe /d /s /c C:\\safe\\watchdog.cmd"
         self.save(self.home,hooks(**{x:[handler(windows=win)] for x in trust.EVENTS}))
