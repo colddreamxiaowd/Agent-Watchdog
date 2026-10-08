@@ -9,7 +9,7 @@
 - 首次 GitHub Actions 运行 [37783860314](https://github.com/colddreamxiaowd/Agent-Watchdog/actions/runs/37783860314)：Ubuntu 成功，Windows **失败**。输出显示 `Ran 43 tests`，Windows `failures=1, errors=2`。这次失败不能隐藏。
 - 已排查：旧 `journal.summary` 使用 `sqlite3.Connection` context manager 后未显式 `close()`，Windows 临时文件 `backup.sqlite3` 仍被占用；旧 `operations.check/archive` 同样改为显式释放句柄；旧测试临时 Git 工作区路径没有通过 `evidence.root_for` 规范化，导致范围判断在 Windows 上不一致。保留并最小修改现有接口。
 - 修复和新增两项人工证据链接负例测试之后，[GitHub Actions 运行 37784304732](https://github.com/colddreamxiaowd/Agent-Watchdog/actions/runs/37784304732) **Ubuntu 与 Windows 两个 job 均成功，每个平台 45 tests、OK**（Python 3.11 托管 Runner）。
-- 随后新增两个运行时反例：旧失败不得永久刷屏、慢调用已完成不得算“卡死”。后续 CI 运行记录请以 GitHub Actions 中与本报告发布提交匹配的 `head_sha` 为准；旧运行只能验证旧提交，不能冒充最终提交已通过。
+- 随后新增两个运行时反例：旧失败不得永久刷屏、慢调用已完成不得算“卡死”。[GitHub Actions 运行 37785913634](https://github.com/colddreamxiaowd/Agent-Watchdog/actions/runs/37785913634) 在提交 `85a029a54f589106a32f340f64e2b0470b75a784` 上 **Windows 与 Ubuntu 皆为 SUCCESS：各 47 tests、OK，另有 Markdown 文件 11 份检查 0 errors**。此记录仅证明所指提交的托管 CI；本报告自身编辑仍需随 PR 复验。
 - 本轮另加入 `scripts/validate_round1_docs.py`，检测四篇的 Markdown 标题、代码围栏、相对链接，并在两个 CI 平台执行。此脚本只能检查格式和本地文件存在，不证明内容正确。
 
 ## 覆盖边界
