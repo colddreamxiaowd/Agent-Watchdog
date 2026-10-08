@@ -94,6 +94,28 @@ class WatchTests(unittest.TestCase):
             con.close()
     def test_missing_log_is_not_proof_app_offline(self):
         self.assertEqual(self.poll()["status"],"NO_LOG_NOT_CODEX_OFFLINE")
+    def test_file_created_after_watcher_starts_is_not_skipped(self):
+        self.assertEqual(self.poll()["status"],"NO_LOG_NOT_CODEX_OFFLINE")
+        self.put(raw_event("PostToolUse",call="first",stamp=self.t))
+        self.assertEqual(self.poll()["events_new"],1)
+
+    def test_no_historical_toast_replay(self):
+        self.put(*(raw_event("PostToolUse",call=str(i),stamp=self.t+i) for i in range(3)))
+        first=self.poll(include_existing=True)
+        self.assertEqual(len(first["new_alert_ids"]),1)
+        next_poll=self.poll()
+        self.assertEqual(next_poll["new_alert_ids"],[])
+        from unittest.mock import patch
+        with patch.object(watch,"notify_windows",return_value=True) as n:
+            watch.show_alerts(self.db,notify=True,new_ids=next_poll["new_alert_ids"])
+            n.assert_not_called()
+
+    def test_stable_append_cursor_not_marked_as_rotation(self):
+        self.put(raw_event("PreToolUse",stamp=self.t+35))
+        self.poll(include_existing=True)
+        self.put(raw_event("PostToolUse",stamp=self.t+36,outcome="SUCCEEDED"))
+        self.assertFalse(self.poll()["cursor_reset"])
+
     def test_new_watcher_starts_at_tail(self):
         self.put(raw_event("PostToolUse",call="old",stamp=self.t))
         self.assertEqual(self.poll()["events_new"],0)
