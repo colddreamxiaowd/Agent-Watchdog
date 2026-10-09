@@ -240,6 +240,12 @@ class TaskLoopTests(unittest.TestCase):
         self.append(event(event="PostToolUse",phase="FINISHED",outcome="FAILED",number=2),
                     event(event="PostToolUse",phase="FINISHED",outcome="SUCCEEDED",number=3))
         self.assertEqual(self.task()["observations"]["outcomes"]["CONFLICT"],1)
+    def test_resource_and_unavailable_states_have_review_codes(self):
+        self.assertIn("RESOURCE_SCAN_SKIPPED_REVIEW",
+            pulse.triggers({"state":"RESOURCE_BOUND_REVIEW"}))
+        self.assertIn("TASK_EVIDENCE_UNAVAILABLE",
+            pulse.triggers({"state":"UNAVAILABLE"}))
+
     def test_resource_preflight_rejects_large_single_file_without_hashing(self):
         self.bind()
         huge=self.repo/"huge.bin"
