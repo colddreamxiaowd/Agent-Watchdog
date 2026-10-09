@@ -121,3 +121,5 @@ python app_task_watch_v37.py watch --notify
 后续优先用真实 Codex App 的若干次合法任务，对照独立人类判断，建立准确率、误报、漏报与告警延迟的证据，再选择是否增强语义判别，避免为了显得智能而牺牲隐私和可信性。
 
 **资源保护**：任务总览只允许扫描至多 5000 个 Git 可见文件、最大单文件 128 MiB、总大小 512 MiB，超过会返回 `RESOURCE_BOUND_REVIEW` 而不是持续哈希大项目。这里的大小/频率是保守工程阈值，并非性能最优值；不要在大型实际科研仓库中直接调低监控间隔来追求伪实时。
+
+如果 Windows 环境中的 `python` 已指向审查过的解释器，也可以在 `examples\v04\watchdog` 目录手动运行 `START_TASK_WATCHDOG.cmd`；它只启动独立前台监督窗口，不会安装新的 Hook、接管 Codex App 或改写合同。
