@@ -147,3 +147,5 @@ python app_task_watch_v37.py watch --notify
 ```
 
 注意：`sessions` 只能观察到正确私有日志中的最近会话；必须先按工作单准备 Git baseline + Task Contract 并**明确运行 bind**，否则 `overview` 不会把任何事件自动归给你的任务。之前用户现场真实 Codex Desktop 事件属于操作者报告，正式信任验收、G3 真实误报漏报和 G4 多日稳定性仍不能凭 GitHub CI 代替。
+
+Windows 用户也可从已激活 Python/Conda 的终端运行 [START_TASK_WATCHDOG.cmd](examples/v04/watchdog/START_TASK_WATCHDOG.cmd)，开启第 37 篇任务监督窗口；它不会安装 Hook 或自动绑定任何任务。
