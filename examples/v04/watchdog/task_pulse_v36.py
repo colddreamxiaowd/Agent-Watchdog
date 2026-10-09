@@ -19,7 +19,9 @@ def connect(db=None):
     p.parent.mkdir(parents=True, exist_ok=True)
     con = sqlite3.connect(str(p), timeout=15)
     con.execute("PRAGMA busy_timeout=15000")
-    con.execute("CREATE TABLE IF NOT EXISTS current (alias TEXT PRIMARY KEY, fingerprint TEXT NOT NULL)")
+    con.execute("CREATE TABLE IF NOT EXISTS current (alias TEXT PRIMARY KEY, fingerprint TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0)")
+    if "revision" not in [x[1] for x in con.execute("PRAGMA table_info(current)").fetchall()]:
+        con.execute("ALTER TABLE current ADD COLUMN revision INTEGER NOT NULL DEFAULT 0")
     con.execute("CREATE TABLE IF NOT EXISTS notices (id TEXT PRIMARY KEY, alias TEXT NOT NULL, code TEXT NOT NULL)")
     return con
 
@@ -64,7 +66,7 @@ def evaluate(snapshot, db=None):
                 if not isinstance(alias, str) or not alias:
                     continue
                 curr = signature(task)
-                previous = con.execute("SELECT fingerprint FROM current WHERE alias=?", (alias,)).fetchone()
+                previous = con.execute("SELECT fingerprint,revision FROM current WHERE alias=?", (alias,)).fetchone()
                 if previous is None:
                     initialized.append(alias)
                 elif previous[0] != curr:
@@ -74,8 +76,8 @@ def evaluate(snapshot, db=None):
                                        (alert_id,alias,code)).rowcount:
                             new.append({"session_alias": alias, "code": code,
                                         "meaning": "Review local task evidence; event author not established"})
-                con.execute("INSERT INTO current(alias,fingerprint) VALUES(?,?) ON CONFLICT(alias) DO UPDATE SET fingerprint=excluded.fingerprint",
-                            (alias, curr))
+                con.execute("INSERT INTO current(alias,fingerprint,revision) VALUES(?,?,?) ON CONFLICT(alias) DO UPDATE SET fingerprint=excluded.fingerprint,revision=excluded.revision",
+                            (alias, curr, revision))
     finally:
         con.close()
     return {"status": "TASK_TRANSITION_REVIEW",
