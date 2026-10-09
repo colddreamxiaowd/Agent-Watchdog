@@ -34,3 +34,14 @@ GitHub `main` 起点 `cac008eb7ac2ebb159e8f23d2d50bd773e282c2e`。本轮新增�
 | 个人试用 | [Windows Codex App Runbook](CODEX_APP_QUICKSTART_29-32.md) | `G3=NOT_EVALUATED`、`G4=NOT_VERIFIED`、不可当正式 V1.0 |
 
 Hook 接收器与 Watcher 没有捕获 prompt、命令或输出，默认删除路径字段。但会话标识仍属于用户本地私有资料。观测器自报来源 `hook_input_unverified`，任何假 Hook 输入都不能作为 Codex App 身份认证。
+
+## 第 34–37 篇新增：可审查的任务绑定与证据变化提示
+
+| 能力 | 已编码的行为 | 仍未验证或不能推断 |
+|---|---|---|
+| Session→任务映射 | 近期会话 alias 由人批准绑定到有基线、经审核的 Task Contract，私有保留完整关联 | 不是官方会话身份认证、无自动语义归属、不会改变已工作的全局 Hook |
+| 任务证据总览 | 独立 Git snapshot / 文件范围 / 批准测试状态 / 对应会话有限统计 | 不知道 Git 修改作者，不自动运行测试或判断全部语义目标已完成 |
+| 任务状态提醒 | 首次巡检不回放旧风险，状态变更和再次复发产生私有 SQLite 记录，Windows 固定提示语 | 未获 G3 实际准确率、通知必达证明、多日可靠性 |
+| 同一窗口运行 | 新 `app_task_watch_v37.py watch --notify` 复用第 30 篇观察器并聚合上述检查 | 仍是用户明确启动的前台伴随程序，无开机守护或 Codex 自动修复 |
+
+用户现场 E2E 仍为 **OPERATOR_REPORTED**；代码无 `REAL_CODEX_E2E_VERIFIED` 的自动判定逻辑。合同 §VERIFIED_COMPLETE§ 只表示指定测试与 Git 范围条件，**不等于自然语言全部目标满足**。

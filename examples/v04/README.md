@@ -131,3 +131,14 @@ python -m unittest discover -s examples\v04\tests -v
 [完整实战手册](../../docs/CODEX_APP_QUICKSTART_29-32.md) · [四章源码索引](CHAPTERS_29-32.md) · [新增模拟测试](tests/test_round3.py)。
 
 **不是** Codex App 内部插件，也不是云端控制器。手动安装需要显式审核，真实 App Hook 触发 G1 待本人确认。所有个人日志、数据库、恢复备份仅本地保存，不随 GitHub 提交。
+
+## 第 34–37 篇：面向真实 Codex App 的任务监督闭环
+
+| 章节 | 源码 | 安全边界 |
+|---|---|---|
+| 34 | [session_binding_v34.py](watchdog/session_binding_v34.py) | 人工审核会话归属；不自动读取原始 prompt、cwd 或命令 |
+| 35 | [task_overview_v35.py](watchdog/task_overview_v35.py) | 任务合同、Git 和保存的验收证据合并呈现，不自动执行验收 |
+| 36 | [task_pulse_v36.py](watchdog/task_pulse_v36.py) | 仅在状态变动时输出新复核提示，SQLite 持久去重 |
+| 37 | [app_task_watch_v37.py](watchdog/app_task_watch_v37.py) | 一条前台命令同时观察事件风险与任务证据变化 |
+
+[四篇章节与操作索引](CHAPTERS_34-37.md) · [Windows 上机使用单](../../docs/ROUND4_TASK_LOOP_RUNBOOK.md) · [本轮回归测试](tests/test_round4.py)。新模块不会覆盖已成功运行的全局 Hook；真实 G3/G4 需要另外审核。

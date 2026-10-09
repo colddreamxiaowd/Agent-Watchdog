@@ -40,6 +40,10 @@
 | 30 | [前台提醒、持久游标与 Windows 通知](从零开发%20Agent%20Watchdog（30）.md) |
 | 31 | [Watcher 恢复、数据库健康与私有备份](从零开发%20Agent%20Watchdog（31）.md) |
 | 32 | [Codex App 伴随监督器试用与完整验收](从零开发%20Agent%20Watchdog（32）.md) |
+| 34 | [如何知道 Codex App 的当前会话属于哪个任务](从零开发%20Agent%20Watchdog（34）.md) |
+| 35 | [会话、Git 和独立验收的任务证据总览](从零开发%20Agent%20Watchdog（35）.md) |
+| 36 | [任务状态变化才提醒，而不是每五秒重复报错](从零开发%20Agent%20Watchdog（36）.md) |
+| 37 | [一个终端统一监督事件、目标与验收](从零开发%20Agent%20Watchdog（37）.md) |
 
 ## 配套源码
 
@@ -124,3 +128,22 @@ python app_control_v32.py watch --notify
 ## 2026-10-08 Codex Desktop 真实接入后的信任修订（v33）
 
 用户现场报告已在 Windows Codex Desktop 捕获五类真实生命周期事件（这是用户提供的操作摘要，尚未由本会话独立读取本机原始日志）。同时确认旧版本**项目级 Hook + 直接引号执行 Python**的通用推荐不适合该 Windows 配置；不要覆盖已工作中的**全局 Hook + commandWindows + ASCII .cmd 包装器**。正式信任应在相同 CODEX_HOME 的**交互式 CLI** 输入 `/hooks` 审核当前定义，而不是在网页版 ChatGPT 中执行。[Codex App Hook 信任与真实现场修订](docs/CODEX_APP_HOOK_TRUST_FIELD_FIX_20261008.md) · [v33 只读 Hook 来源体检](examples/v04/watchdog/app_trust_review_v33.py)。G1 操作者报告 E2E 已见、Trust 待正常无 bypass 核验；G3/G4 仍未通过。
+
+## AW-V2 第 34–37 篇：从“观察事件”迈向“任务监督闭环”
+
+第 29–33 篇解决真实 Windows Codex App 事件接入、全局 Hook、信任和引号问题后，这一轮优先补上最关键的任务归属与结果证据链：**人工选定脱敏会话 → 映射到已批准 Task Contract → 对照 Git 变化与独立测试 → 只通知新的状态变化。**
+
+- **[Windows 实战工作单](docs/ROUND4_TASK_LOOP_RUNBOOK.md)** · [本轮测试与证据范围](docs/ROUND4_TEST_REPORT.md) · [四章源码索引](examples/v04/CHAPTERS_34-37.md)。
+- `session_binding_v34.py`：真实会话元数据只有 source + session，原始工作目录默认不落库；**人工批准**绑定一份已有基线、经审核的 Task Contract，不篡改全局 Hook。
+- `task_overview_v35.py`：联合读取会话统计、任务合同、Git 实际文件范围和**之前人工执行的**验收结果，提供可执行的下一步建议，不根据工具成功虚构进度百分比。
+- `task_pulse_v36.py`：只在合同/范围/验收证据发生新变化时提醒；状态 A→B→A 是新事件，稳态轮询与重启不会重复通知旧问题。
+- `app_task_watch_v37.py`：统一前台 `sessions`、`bind`、`overview`、`watch --notify`。仍不自动下载模型、运行测试、kill/retry Codex App，也不声称任何文件改动一定是 Codex 写的。
+
+```bat
+cd /d D:\program\Agent-Watchdog-v37-eval\examples\v04\watchdog
+python app_task_watch_v37.py sessions
+python app_task_watch_v37.py overview
+python app_task_watch_v37.py watch --notify
+```
+
+注意：`sessions` 只能观察到正确私有日志中的最近会话；必须先按工作单准备 Git baseline + Task Contract 并**明确运行 bind**，否则 `overview` 不会把任何事件自动归给你的任务。之前用户现场真实 Codex Desktop 事件属于操作者报告，正式信任验收、G3 真实误报漏报和 G4 多日稳定性仍不能凭 GitHub CI 代替。

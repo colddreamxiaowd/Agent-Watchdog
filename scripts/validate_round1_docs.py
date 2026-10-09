@@ -9,8 +9,8 @@ from pathlib import Path
 from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = [ROOT / f"从零开发 Agent Watchdog（{i}）.md" for i in range(21, 33)]
-PAGES += [ROOT / "README.md", ROOT / "examples/v04/CHAPTERS_21-24.md", ROOT / "examples/v04/CHAPTERS_25-28.md", ROOT / "examples/v04/CHAPTERS_29-32.md"]
+PAGES = [ROOT / f"从零开发 Agent Watchdog（{i}）.md" for i in list(range(21, 33)) + list(range(34, 38))]
+PAGES += [ROOT / "README.md", ROOT / "examples/v04/CHAPTERS_21-24.md", ROOT / "examples/v04/CHAPTERS_25-28.md", ROOT / "examples/v04/CHAPTERS_29-32.md", ROOT / "examples/v04/CHAPTERS_34-37.md"]
 PAGES += list((ROOT / "docs").glob("*.md"))
 errors = []
 for page in PAGES:
