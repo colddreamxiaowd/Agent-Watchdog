@@ -122,7 +122,7 @@ python app_task_watch_v37.py bind --repo "D:\Projects\watchdog-demo" --alias "RE
 python app_task_watch_v37.py watch --notify
 ```
 
-该命令不需要新的云端 API Key，不需要下载 StepWise 权重，也不占用 RTX 5060 的显存。它使用已有的 Python 标准库和项目源码：轮询日志、检查本地 Git 事实、更新私有 SQLite，并在发生符合规则的新状态时尝试 Windows 通知。
+该命令不需要新的云端 API Key，不需要下载 StepWise 权重，也不占用 RTX 5060 的显存。它使用已有的 Python 标准库和项目源码：以默认 30 秒巡检轮询日志、在资源界限内检查本地 Git 事实、更新私有 SQLite，并在发生符合规则的新状态时尝试 Windows 通知。
 
 不加 `--notify` 也可以运行：监控窗口会输出当前状态和新事件/新风险，数据库同样保留审计记录。加上 `--once` 则执行一次巡检后退出，适合排查路径错误和观察当前快照。
 
@@ -171,3 +171,5 @@ python app_task_watch_v37.py watch --notify
 所以第 37 篇是一次**有证据边界的任务监督 MVP 集成**，不是正式 V1.0 宣布。后续工程应以你真正的 Codex App 使用任务作为受控评估对象，先观察这些提示在实际运行中是否帮你少盯屏幕、少错过关键验收，再逐项升级。
 
 源码：[统一观察入口](examples/v04/watchdog/app_task_watch_v37.py) · [任务总览](examples/v04/watchdog/task_overview_v35.py) · [SQLite 任务提醒](examples/v04/watchdog/task_pulse_v36.py) · [Windows 实操工作单](docs/ROUND4_TASK_LOOP_RUNBOOK.md)。
+
+> **性能边界**：对于含大量 Git 可见文件或大文件的实际仓库，新任务总览会主动输出 `RESOURCE_BOUND_REVIEW`，而不是让观察器在后台不断哈希数 GB 的文件；大项目需要先明确缩小安全扫描范围再评估部署。这个拒绝扫描不代表任务完成或失败。
