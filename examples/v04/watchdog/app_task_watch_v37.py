@@ -58,7 +58,7 @@ def main():
     x.add_argument("--watch-db"); x.add_argument("--pulse-db")
     x.add_argument("--notify", action="store_true")
     x.add_argument("--once",action="store_true")
-    x.add_argument("--interval",type=int,default=5)
+    x.add_argument("--interval",type=int,default=30)
     a=p.parse_args()
     if a.action == "sessions":
         rows=[{k:v for k,v in x.items() if not k.startswith("_")} for x in session_binding_v34.sessions(a.log)]
