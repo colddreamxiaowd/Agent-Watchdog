@@ -44,6 +44,9 @@ class TaskLoopTests(unittest.TestCase):
         (self.repo/"src.py").write_bytes(b"print(1)\n")
         subprocess.run(["git","add","."],cwd=self.repo,check=True,capture_output=True)
         subprocess.run(["git","commit","-m","baseline"],cwd=self.repo,check=True,capture_output=True)
+        # Git on Windows normalizes drive/root representation; state_dir keys
+        # must use the same canonical Git root as bind() and CLI.
+        self.repo=evidence.root_for(self.repo)
         self.contract=self.root/"contract.json"
         self.contract.write_text(json.dumps({
             "schema_version":1,"goal":"Only modify src.py and pass tests",
