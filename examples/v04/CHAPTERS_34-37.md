@@ -14,3 +14,5 @@
 隔离测试在 [test_round4.py](tests/test_round4.py)：正反例验证跨会话隔离、假 Hook 不认证、baseline/合同变化失效、Git 保护文件事实不归因、通过测试后证据变过期、告警重启去重和 A→B→A 复发。它们没有运行真实桌面 App，不是 detector efficacy 或正式 G4。
 
 **重要**：前一版会话日志因最小化原则不包含 cwd，自动关联项目在当前证据下不可信。因此第一版采用人工绑定；未来若要减少人工介入，必须独立审查相应来源身份/授权边界，而不是偷偷恢复收集提示词与命令。
+
+Windows 手动启动脚本：[START_TASK_WATCHDOG.cmd](watchdog/START_TASK_WATCHDOG.cmd)。先完成批准合同与会话绑定，否则它仍可观察通用事件，但没有任务级可审查对象。
