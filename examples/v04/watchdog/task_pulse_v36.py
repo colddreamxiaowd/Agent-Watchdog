@@ -67,11 +67,14 @@ def evaluate(snapshot, db=None):
                     continue
                 curr = signature(task)
                 previous = con.execute("SELECT fingerprint,revision FROM current WHERE alias=?", (alias,)).fetchone()
+                revision = 0 if previous is None else previous[1]
                 if previous is None:
                     initialized.append(alias)
                 elif previous[0] != curr:
+                    revision += 1
                     for code in triggers(task):
-                        alert_id = hashlib.sha256((alias+"\0"+curr+"\0"+code).encode()).hexdigest()
+                        # Recurrence A->B->A is another meaningful transition.
+                        alert_id = hashlib.sha256((alias+"\0"+str(revision)+"\0"+code).encode()).hexdigest()
                         if con.execute("INSERT OR IGNORE INTO notices(id,alias,code) VALUES(?,?,?)",
                                        (alert_id,alias,code)).rowcount:
                             new.append({"session_alias": alias, "code": code,
