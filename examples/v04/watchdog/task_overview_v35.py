@@ -10,6 +10,36 @@ import session_binding_v34 as binding
 import task_contract
 
 
+
+# Conservative guard: a foreground observer should not hash multi-GB worktrees
+# every polling cycle and interfere with a running coding agent.
+MAX_FILES = 5000
+MAX_SINGLE_FILE = 128 * 1024 * 1024
+MAX_TOTAL_BYTES = 512 * 1024 * 1024
+
+
+def resource_preflight(repo):
+    names = [x for x in evidence.git(repo,"ls-files","--cached","--others",
+                                      "--exclude-standard","-z").split(b"\0") if x]
+    if len(names) > MAX_FILES:
+        return "TOO_MANY_GIT_VISIBLE_FILES"
+    total = 0
+    import os
+    for raw in names:
+        p = repo / os.fsdecode(raw)
+        if p.is_symlink() or not p.is_file():
+            continue
+        try:
+            size = p.stat().st_size
+        except OSError:
+            return "FILE_STAT_UNAVAILABLE"
+        if size > MAX_SINGLE_FILE:
+            return "SINGLE_FILE_TOO_LARGE"
+        total += size
+        if total > MAX_TOTAL_BYTES:
+            return "TOTAL_GIT_VISIBLE_FILES_TOO_LARGE"
+    return None
+
 def event_summary(events, entry):
     subset = []
     seen = set()
@@ -62,6 +92,12 @@ def single(entry, events, show_goal=False):
         entry.get("baseline_snapshot") != base.get("snapshot_id")):
         return {**result, "state": "BASELINE_CHANGED",
                 "actions": ["REVIEW_BASELINE_RESET_MANUALLY"], "observations": event_summary(events, entry)}
+    resource_issue = resource_preflight(repo)
+    if resource_issue:
+        return {**result, "state": "RESOURCE_BOUND_REVIEW",
+                "reason": resource_issue,
+                "actions": ["REDUCE_SCAN_SCOPE_OR_USE_SMALL_TEST_REPOSITORY"],
+                "observations": event_summary(events, entry)}
     checks = task_contract.acceptance_status(repo)
     scope = scope_guard.check(repo)
     findings = scope.get("findings", [])
