@@ -240,6 +240,16 @@ class TaskLoopTests(unittest.TestCase):
         self.append(event(event="PostToolUse",phase="FINISHED",outcome="FAILED",number=2),
                     event(event="PostToolUse",phase="FINISHED",outcome="SUCCEEDED",number=3))
         self.assertEqual(self.task()["observations"]["outcomes"]["CONFLICT"],1)
+    def test_resource_preflight_rejects_large_single_file_without_hashing(self):
+        self.bind()
+        huge=self.repo/"huge.bin"
+        with huge.open("wb") as f:
+            f.truncate(129*1024*1024)
+        task=self.task()
+        self.assertEqual(task["state"],"RESOURCE_BOUND_REVIEW")
+        self.assertEqual(task["reason"],"SINGLE_FILE_TOO_LARGE")
+        self.assertNotIn("contract_checks_stage",task)
+
     def test_no_repeat_notifications_after_watcher_restart(self):
         self.bind()
         united.cycle(self.log,self.registry,self.watch_db,self.db)
