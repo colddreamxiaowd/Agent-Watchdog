@@ -96,9 +96,10 @@ class TaskLoopTests(unittest.TestCase):
     def test_unknown_alias_or_stale_observation_rejected(self):
         with self.assertRaises(ValueError):
             binding.bind(self.repo,"not-a-real-alias",self.log,self.registry,approved=True)
+        valid_alias=self.alias()
         with patch.object(binding,"sessions",return_value=[]):
             with self.assertRaises(ValueError):
-                self.bind()
+                binding.bind(self.repo,valid_alias,self.log,self.registry,approved=True)
     def test_registry_refuses_observed_repo_and_symlink(self):
         with self.assertRaises(ValueError):
             binding.bind(self.repo,self.alias(),self.log,self.repo/"bad.json",approved=True)
