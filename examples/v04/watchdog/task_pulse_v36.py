@@ -29,6 +29,10 @@ def connect(db=None):
 def triggers(task):
     codes = []
     status = task.get("state")
+    if status == "UNAVAILABLE":
+        codes.append("TASK_EVIDENCE_UNAVAILABLE")
+    if status == "RESOURCE_BOUND_REVIEW":
+        codes.append("RESOURCE_SCAN_SKIPPED_REVIEW")
     if status == "CONTRACT_CHANGED_OR_UNAPPROVED":
         codes.append("CONTRACT_REAPPROVAL_REVIEW")
     if status == "BASELINE_CHANGED":
