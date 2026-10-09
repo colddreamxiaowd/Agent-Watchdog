@@ -191,6 +191,20 @@ class TaskLoopTests(unittest.TestCase):
         (self.repo/"other.txt").write_bytes(b"out of scope\n")
         self.assertEqual(len(pulse.evaluate(self.report(),self.db)["new_notices"]),1)
         self.assertEqual(pulse.evaluate(self.report(),self.db)["new_notices"],[])
+    def test_repeated_risk_after_recovery_is_new_transition(self):
+        self.bind()
+        pulse.evaluate(self.report(),self.db)
+        original=(self.repo/"GOAL.md").read_bytes()
+        (self.repo/"GOAL.md").write_bytes(b"first new violation\n")
+        self.assertEqual(len(pulse.evaluate(self.report(),self.db)["new_notices"]),1)
+        (self.repo/"GOAL.md").write_bytes(original)
+        self.assertEqual(pulse.evaluate(self.report(),self.db)["new_notices"],[])
+        (self.repo/"GOAL.md").write_bytes(b"first new violation\n")
+        second=pulse.evaluate(self.report(),self.db)
+        self.assertEqual(len(second["new_notices"]),1)
+        self.assertEqual(second["new_notices"][0]["code"],"PROTECTED_FILE_REVIEW")
+        self.assertEqual(pulse.evaluate(self.report(),self.db)["new_notices"],[])
+
     def test_contract_change_notification_is_not_auto_approval(self):
         self.bind()
         pulse.evaluate(self.report(),self.db)
