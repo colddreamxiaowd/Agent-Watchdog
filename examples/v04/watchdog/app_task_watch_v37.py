@@ -12,6 +12,8 @@ import task_overview_v35
 import task_pulse_v36
 
 TASK_MESSAGES = {
+    "TASK_EVIDENCE_UNAVAILABLE": "Task evidence unavailable. Check local registry and permissions.",
+    "RESOURCE_SCAN_SKIPPED_REVIEW": "Git scan skipped due to resource bounds. Review locally.",
     "CONTRACT_REAPPROVAL_REVIEW": "Task contract changed. Review approval and binding.",
     "BASELINE_RESET_REVIEW": "Task Git baseline changed. Review binding.",
     "PROTECTED_FILE_REVIEW": "Protected file differs. Review local task evidence.",
